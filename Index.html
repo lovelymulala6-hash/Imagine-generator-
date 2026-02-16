@@ -1,123 +1,144 @@
-<html><head><style>body {
-   color: black;
-}
-Add color </style></head><body><p>&lt;!DOCTYPE html&gt;</p>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Random African Image Generator</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+<title>St Lovely</title>
+
 <style>
-* { box-sizing: border-box; }
-body {
-  margin: 0;
-  font-family: &#39;Poppins&#39;, sans-serif;
-  background: linear-gradient(135deg, #1e3c72, #2a5298);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  color: white;
-}
-.container {
-  background: rgba(255,255,255,0.1);
-  backdrop-filter: blur(15px);
-  padding: 30px;
-  border-radius: 20px;
-  width: 90%;
-  max-width: 800px;
-  text-align: center;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.4);
-}
-h1 { margin-top: 0; font-weight: 700; }
-button {
-  padding: 12px 20px;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: 600;
-  background: #ffcc00;
-  color: black;
-  margin: 10px;
-  transition: 0.3s ease;
-}
-button:hover { transform: scale(1.05); }
-.download-btn { background: #00e676; }
-img {
-  width: 100%;
-  max-height: 450px;
-  object-fit: cover;
-  border-radius: 15px;
-  margin-top: 20px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-}
-select {
-  padding: 8px;
-  border-radius: 8px;
-  border: none;
-  margin-top: 10px;
-}
-footer {
-  margin-top: 20px;
-  font-size: 12px;
-  opacity: 0.7;
-}
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #ff9a9e, #fad0c4, #a18cd1);
+        background-size: 400% 400%;
+        animation: gradientBG 12s ease infinite;
+        text-align: center;
+    }
+
+    @keyframes gradientBG {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    h1 {
+        margin: 20px 0;
+        font-size: 3em;
+        color: white;
+        text-shadow: 2px 2px 8px rgba(0,0,0,0.4);
+    }
+
+    button {
+        padding: 10px 20px;
+        font-size: 16px;
+        border: none;
+        border-radius: 20px;
+        background: #ffffff;
+        cursor: pointer;
+        margin-bottom: 20px;
+        transition: 0.3s;
+    }
+
+    button:hover {
+        background: #ffd1dc;
+        transform: scale(1.05);
+    }
+
+    .gallery {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+        padding: 20px;
+    }
+
+    .gallery img {
+        width: 250px;
+        height: 250px;
+        object-fit: cover;
+        border-radius: 15px;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+
+    .gallery img:hover {
+        transform: scale(1.05);
+    }
+
+    /* Modal for zoom */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 999;
+        padding-top: 50px;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.8);
+    }
+
+    .modal-content {
+        margin: auto;
+        display: block;
+        max-width: 80%;
+        max-height: 80%;
+        border-radius: 15px;
+    }
+
+    .close {
+        position: absolute;
+        top: 20px;
+        right: 35px;
+        color: white;
+        font-size: 40px;
+        cursor: pointer;
+    }
 </style>
 </head>
+
 <body>
 
-<div class="container">
-  <h1>🌍 Random African Picture Generator</h1>
+<h1>St Lovely</h1>
 
-  <p>Select a category:</p>
-  <select id="category">
-    <option value="african people">African People</option>
-    <option value="african wildlife">African Wildlife</option>
-    <option value="african culture">African Culture</option>
-    <option value="african landscape">African Landscape</option>
-    <option value="african city">African Cities</option>
-  </select>
+<button onclick="generateImages()">Generate Random Pictures</button>
 
-  <br>
-  <button onclick="generateImage()">Generate Random Image</button>
-  <button class="download-btn" onclick="downloadImage()">Download Image</button>
+<div class="gallery" id="gallery"></div>
 
-  <img id="image" src="" alt="Random African Image" style="display:none;">
-
-  <footer>Powered by Unsplash Source API</footer>
+<!-- Modal -->
+<div id="imageModal" class="modal">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <img class="modal-content" id="modalImg">
 </div>
 
 <script>
-let currentImageURL = &quot;&quot;;
+function generateImages() {
+    const gallery = document.getElementById("gallery");
+    gallery.innerHTML = "";
 
-function generateImage() {
-  const category = document.getElementById(&#39;category&#39;).value;
-  const image = document.getElementById(&#39;image&#39;);
-
-  const url = <code>https://source.unsplash.com/1600x900/?${encodeURIComponent(category)},africa&amp;random=${Math.random()}</code>;
-
-  currentImageURL = url;
-  image.src = url;
-  image.style.display = &#39;block&#39;;
+    for (let i = 0; i < 6; i++) {
+        const img = document.createElement("img");
+        img.src = "https://picsum.photos/400?random=" + Math.random();
+        img.onclick = function() {
+            openModal(this.src);
+        };
+        gallery.appendChild(img);
+    }
 }
 
-function downloadImage() {
-  if (!currentImageURL) {
-    alert(&quot;Please generate an image first.&quot;);
-    return;
-  }
-
-  const link = document.createElement(&#39;a&#39;);
-  link.href = currentImageURL;
-  link.download = &quot;african_image.jpg&quot;;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
+function openModal(src) {
+    document.getElementById("imageModal").style.display = "block";
+    document.getElementById("modalImg").src = src;
 }
+
+function closeModal() {
+    document.getElementById("imageModal").style.display = "none";
+}
+
+// Load images on start
+generateImages();
 </script>
 
 </body>
 </html>
-</body></html>
